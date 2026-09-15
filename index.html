@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Spanish Telephony Modules</title>
+  <style>
+    :root {
+      --bg-canvas: #ffffff;
+      --surface: #f6f8fa;
+      --surface-card: #ffffff;
+      --border-color: #d0d7de;
+      --text-primary: #1f2328;
+      --text-secondary: #656d76;
+      --accent: #0969da;
+      --accent-hover: #0550ae;
+      --badge-bg: #ddf4ff;
+      --badge-text: #0969da;
+    }
+
+    body:has(#theme-toggle:checked) {
+      --bg-canvas: #0d1117;
+      --surface: #161b22;
+      --surface-card: #1c2128;
+      --border-color: #30363d;
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --badge-bg: #1f2a3a;
+      --badge-text: #58a6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 32px 20px 60px 20px;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* Fixed Theme Toggle */
+    .theme-toggle-container {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 100000;
+    }
+
+    #theme-toggle {
+      display: none;
+    }
+
+    .theme-toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-label:hover {
+      border-color: var(--accent);
+    }
+
+    .dark-text { display: none; }
+    .light-text { display: inline; }
+
+    body:has(#theme-toggle:checked) .dark-text { display: inline; }
+    body:has(#theme-toggle:checked) .light-text { display: none; }
+
+    /* Header */
+    header {
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      color: var(--text-primary);
+    }
+
+    p.subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Category Sections */
+    .category-group {
+      margin-bottom: 36px;
+    }
+
+    h2.category-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background-color: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-top {
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0 0 6px 0;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      padding: 8px 12px;
+      border-radius: 6px;
+      background-color: var(--surface);
+      border: 1px solid var(--border-color);
+      transition: all 0.15s ease;
+    }
+
+    .btn-link:hover {
+      background-color: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Zero-JS CSS:has Theme Switcher -->
+  <div class="theme-toggle-container">
+    <input type="checkbox" id="theme-toggle" aria-label="Cambiar modo oscuro">
+    <label for="theme-toggle" class="theme-toggle-label">
+      <span class="light-text">🌙 Modo oscuro</span>
+      <span class="dark-text">☀️ Modo claro</span>
+    </label>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>Business Spanish Telephony Modules</h1>
+      <p class="subtitle">Módulos interactivos de práctica auditiva, vocabulario técnico y decodificación de llamadas comerciales (Español Neutro LATAM).</p>
+    </header>
+
+    <!-- 1. Ventas, Pedidos y Cotizaciones -->
+    <section class="category-group">
+      <h2 class="category-title">🛒 Ventas, Pedidos y Compras</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 1</span>
+            <h3 class="card-title">Preguntar por camionetas para la empresa</h3>
+            <p class="card-desc">Cotización de flotilla comercial Ford Transit 250 y cita en concesionario.</p>
+          </div>
+          <a href="scenes/scene_1.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 2</span>
+            <h3 class="card-title">Hablar con Ventas</h3>
+            <p class="card-desc">Solicitud de catálogo y listas de precios vigentes de bombas de agua.</p>
+          </div>
+          <a href="scenes/scene_2.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 3</span>
+            <h3 class="card-title">Hacer un pedido de madera</h3>
+            <p class="card-desc">Pedido al mayoreo de hojas de triplay para estantería comercial.</p>
+          </div>
+          <a href="scenes/scene_3.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 4</span>
+            <h3 class="card-title">Cambiar el pedido de una copiadora</h3>
+            <p class="card-desc">Ajuste de modelo de equipo multifuncional y reenvío de orden de compra.</p>
+          </div>
+          <a href="scenes/scene_4.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 5</span>
+            <h3 class="card-title">Hacer un cambio en el pedido</h3>
+            <p class="card-desc">Modificación de abarrotes secos por toallas de papel y pago al recoger.</p>
+          </div>
+          <a href="scenes/scene_5.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 7</span>
+            <h3 class="card-title">Cambiar detalles de un pedido de pintura</h3>
+            <p class="card-desc">Ajuste de acabados de pintura y redirección de entrega a obra.</p>
+          </div>
+          <a href="scenes/scene_7.html" class="btn-link">Abrir módulo →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Logística, Entregas y Cobranza -->
+    <section class="category-group">
+      <h2 class="category-title">📦 Logística, Operaciones y Cobranza</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 6</span>
+            <h3 class="card-title">Avisar que ya llegó el pedido</h3>
+            <p class="card-desc">Confirmación de entrega de tarima de llantas en andén de carga.</p>
+          </div>
+          <a href="scenes/scene_6.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 12</span>
+            <h3 class="card-title">Reclamar un pedido que no llega</h3>
+            <p class="card-desc">Reclamo urgente por banda industrial demorada y amenaza de cancelación.</p>
+          </div>
+          <a href="scenes/scene_12.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 13</span>
+            <h3 class="card-title">Cobrar una factura pendiente</h3>
+            <p class="card-desc">Seguimiento de pago atrasado por molduras tras mudanza corporativa.</p>
+          </div>
+          <a href="scenes/scene_13.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 25</span>
+            <h3 class="card-title">Dar indicaciones para la entrega de una carga</h3>
+            <p class="card-desc">Ruta paso a paso y señas viales para la llegada de un camión a bodega.</p>
+          </div>
+          <a href="scenes/scene_25.html" class="btn-link">Abrir módulo →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Reuniones, Citas y Coordinación Corporativa -->
+    <section class="category-group">
+      <h2 class="category-title">📅 Reuniones, Citas y Gestión Corporativa</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 8</span>
+            <h3 class="card-title">Agendar una cita de trabajo</h3>
+            <p class="card-desc">Coordinación de horario para junta de presentación de nuevos productos.</p>
+          </div>
+          <a href="scenes/scene_8.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 9</span>
+            <h3 class="card-title">Invitar a una junta de negocios</h3>
+            <p class="card-desc">Aviso formal para reunión de alianzas estratégicas regionales.</p>
+          </div>
+          <a href="scenes/scene_9.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 10</span>
+            <h3 class="card-title">Avisar que no puedo ir a una junta</h3>
+            <p class="card-desc">Notificación de conflicto de horario y designación de reemplazo.</p>
+          </div>
+          <a href="scenes/scene_10.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 11</span>
+            <h3 class="card-title">Disculparme por faltar a una junta</h3>
+            <p class="card-desc">Justificación de ausencia urgente por contingencia operativa marítima.</p>
+          </div>
+          <a href="scenes/scene_11.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 15</span>
+            <h3 class="card-title">Cambiar la fecha de una cita</h3>
+            <p class="card-desc">Reprogramación de revisión presupuestal con analistas fiscales.</p>
+          </div>
+          <a href="scenes/scene_15.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 16</span>
+            <h3 class="card-title">Avisar que voy a llegar tarde</h3>
+            <p class="card-desc">Aviso de demora por conexión aérea y ajuste del orden del día.</p>
+          </div>
+          <a href="scenes/scene_16.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 26</span>
+            <h3 class="card-title">Llegar a una cita en la oficina</h3>
+            <p class="card-desc">Recepción, anuncio formal y espera con cortesía en recepción.</p>
+          </div>
+          <a href="scenes/scene_26.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 27</span>
+            <h3 class="card-title">Acordar los siguientes pasos de un proyecto</h3>
+            <p class="card-desc">Cierre de acuerdos de financiamiento y fijación de agenda para julio.</p>
+          </div>
+          <a href="scenes/scene_27.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 28</span>
+            <h3 class="card-title">Proponer adelantar un lanzamiento</h3>
+            <p class="card-desc">Argumentación operativa para adelantar fecha comercial a diciembre.</p>
+          </div>
+          <a href="scenes/scene_28.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 29</span>
+            <h3 class="card-title">Ver una alianza para entrar a una licitación</h3>
+            <p class="card-desc">Negociación de consorcio para licitación pesada de ampliación de puerto.</p>
+          </div>
+          <a href="scenes/scene_29.html" class="btn-link">Abrir módulo →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Viajes, Transporte y Hospitalidad -->
+    <section class="category-group">
+      <h2 class="category-title">✈️ Viajes, Transporte y Eventos</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 14</span>
+            <h3 class="card-title">Preguntar por un cuarto de hotel</h3>
+            <p class="card-desc">Consulta de tarifas y servicios para estancia corporativa en mayo.</p>
+          </div>
+          <a href="scenes/scene_14.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 17</span>
+            <h3 class="card-title">Pedir un taxi al aeropuerto</h3>
+            <p class="card-desc">Despacho urgente de taxi para traslado de director de ventas.</p>
+          </div>
+          <a href="scenes/scene_17.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 18</span>
+            <h3 class="card-title">Checar los datos de un vuelo</h3>
+            <p class="card-desc">Confirmación de itinerario de salida y tiempos límite para documentar.</p>
+          </div>
+          <a href="scenes/scene_18.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 19</span>
+            <h3 class="card-title">Comprar boletos de avión</h3>
+            <p class="card-desc">Apartado en clase ejecutiva y transferencia al área de cobro.</p>
+          </div>
+          <a href="scenes/scene_19.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 20</span>
+            <h3 class="card-title">Agradecer una invitación a cenar</h3>
+            <p class="card-desc">Cortesía comercial posterior a una cena con equipo corporativo.</p>
+          </div>
+          <a href="scenes/scene_20.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 21</span>
+            <h3 class="card-title">Confirmar asistencia a una comida</h3>
+            <p class="card-desc">Confirmación de registro de última hora para banquete protocolario.</p>
+          </div>
+          <a href="scenes/scene_21.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 22</span>
+            <h3 class="card-title">Rechazar una invitación</h3>
+            <p class="card-desc">Declinación cortés a evento de carreras por convención en Las Vegas.</p>
+          </div>
+          <a href="scenes/scene_22.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 23</span>
+            <h3 class="card-title">Preguntar por horarios de tren</h3>
+            <p class="card-desc">Consulta de tarifas y horarios de tren Acela para viaje de negocios.</p>
+          </div>
+          <a href="scenes/scene_23.html" class="btn-link">Abrir módulo →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="badge">Escena 24</span>
+            <h3 class="card-title">Preguntar por horarios del ferri</h3>
+            <p class="card-desc">Itinerario y costos para cruce de vehículo estándar.</p>
+          </div>
+          <a href="scenes/scene_24.html" class="btn-link">Abrir módulo →</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>
