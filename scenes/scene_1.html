@@ -1,418 +1,492 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</title>
-  <style>
-    :root {
-      --bg-canvas: #ffffff;
-      --surface: #f6f8fa;
-      --border-color: #d0d7de;
-      --text-primary: #1f2328;
-      --text-secondary: #656d76;
-      --accent: #0969da;
-      --blockquote-bg: #f8fafd;
-      --dock-bg: #ffffff;
-      --dock-border: #d0d7de;
-      --summary-bg: #eaeef2;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</title>
+    <style>
+        :root {
+            --bg-canvas: #ffffff;
+            --surface: #f6f8fa;
+            --border-color: #d0d7de;
+            --text-primary: #1f2328;
+            --text-secondary: #656d76;
+            --accent: #0969da;
+            --blockquote-bg: #f8fafd;
+            --dock-bg: #ffffff;
+            --dock-border: #d0d7de;
+            --summary-bg: #eaeef2;
+        }
 
-    body:has(#theme-toggle:checked) {
-      --bg-canvas: #0d1117;
-      --surface: #161b22;
-      --border-color: #30363d;
-      --text-primary: #c9d1d9;
-      --text-secondary: #8b949e;
-      --accent: #58a6ff;
-      --blockquote-bg: #161b22;
-      --dock-bg: #161b22;
-      --dock-border: #30363d;
-      --summary-bg: #21262d;
-    }
+        body:has(#theme-toggle:checked) {
+            --bg-canvas: #0d1117;
+            --surface: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --blockquote-bg: #161b22;
+            --dock-bg: #161b22;
+            --dock-border: #30363d;
+            --summary-bg: #21262d;
+        }
 
-    * {
-      box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 24px 20px;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
 
-    /* Fixed Top-Right Theme Toggle */
-    #theme-toggle { display: none; }
+        /* Fixed Top-Right Theme Toggle */
+        #theme-toggle {
+            display: none;
+        }
 
-    .theme-toggle-btn {
-      position: fixed;
-      top: 16px;
-      right: 20px;
-      z-index: 100000;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      background: var(--surface);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      user-select: none;
-      transition: all 0.2s ease;
-    }
+        .theme-toggle-btn {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            z-index: 100000;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            user-select: none;
+            transition: all 0.2s ease;
+        }
 
-    .theme-toggle-btn:hover {
-      border-color: var(--accent);
-    }
+        .theme-toggle-btn:hover {
+            border-color: var(--accent);
+        }
 
-    .icon-sun { display: none; }
-    .icon-moon { display: inline; }
+        .icon-sun {
+            display: none;
+        }
 
-    body:has(#theme-toggle:checked) .icon-sun { display: inline; }
-    body:has(#theme-toggle:checked) .icon-moon { display: none; }
-    body:has(#theme-toggle:checked) .mode-label::after { content: "Modo claro"; }
-    body:not(:has(#theme-toggle:checked)) .mode-label::after { content: "Modo oscuro"; }
+        .icon-moon {
+            display: inline;
+        }
 
-    /* Typography & Headers */
-    h1, h2, h3 {
-      color: var(--text-primary);
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-    }
+        body:has(#theme-toggle:checked) .icon-sun {
+            display: inline;
+        }
 
-    hr {
-      border: 0;
-      border-top: 1px solid var(--border-color);
-      margin: 24px 0;
-    }
+        body:has(#theme-toggle:checked) .icon-moon {
+            display: none;
+        }
 
-    /* Vocabulary Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 14px;
-    }
+        body:has(#theme-toggle:checked) .mode-label::after {
+            content: "Modo claro";
+        }
 
-    th, td {
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      text-align: left;
-    }
+        body:not(:has(#theme-toggle:checked)) .mode-label::after {
+            content: "Modo oscuro";
+        }
 
-    th {
-      background-color: var(--surface);
-      color: var(--accent);
-      font-weight: 600;
-    }
+        /* Typography & Headers */
+        h1,
+        h2,
+        h3 {
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
 
-    tr:nth-child(even) td {
-      background-color: var(--surface);
-    }
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 24px 0;
+        }
 
-    /* Dialogue Blockquotes */
-    blockquote {
-      margin: 8px 0 12px 0;
-      padding: 12px 16px;
-      background: var(--blockquote-bg);
-      border-left: 4px solid var(--accent);
-      border-radius: 0 6px 6px 0;
-      color: var(--text-primary);
-    }
+        /* Vocabulary Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
 
-    blockquote p {
-      margin: 0;
-    }
+        th,
+        td {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
 
-    /* Progressive Reveal Dropdowns */
-    details {
-      background: var(--surface);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-    }
+        th {
+            background-color: var(--surface);
+            color: var(--accent);
+            font-weight: 600;
+        }
 
-    summary {
-      cursor: pointer;
-      user-select: none;
-      font-weight: 600;
-      color: var(--accent);
-      outline: none;
-      transition: color 0.15s ease;
-    }
+        tr:nth-child(even) td {
+            background-color: var(--surface);
+        }
 
-    summary:hover {
-      opacity: 0.85;
-    }
+        /* Dialogue Blockquotes */
+        blockquote {
+            margin: 8px 0 12px 0;
+            padding: 12px 16px;
+            background: var(--blockquote-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            color: var(--text-primary);
+        }
 
-    details[open] {
-      padding-bottom: 10px;
-    }
+        blockquote p {
+            margin: 0;
+        }
 
-    details em {
-      display: block;
-      margin-top: 6px;
-      color: var(--text-secondary);
-    }
+        /* Progressive Reveal Dropdowns */
+        details {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
 
-    /* Bottom Fixed Audio Dock */
-    #audio-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 99999;
-      background: var(--dock-bg);
-      padding: 10px 0;
-      border-top: 1px solid var(--dock-border);
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12);
-      transition: background 0.2s ease;
-    }
+        summary {
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            color: var(--accent);
+            outline: none;
+            transition: color 0.15s ease;
+        }
 
-    #audio-bar .audio-container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+        summary:hover {
+            opacity: 0.85;
+        }
 
-    #audio-bar audio {
-      width: 100%;
-      height: 38px;
-    }
+        details[open] {
+            padding-bottom: 10px;
+        }
 
-    /* Mandatory 80px Collision Spacer */
-    .collision-spacer {
-      height: 80px;
-      width: 100%;
-    }
-  </style>
+        details em {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-secondary);
+        }
+
+        /* Bottom Fixed Audio Dock */
+        #audio-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 99999;
+            background: var(--dock-bg);
+            padding: 10px 0;
+            border-top: 1px solid var(--dock-border);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12);
+            transition: background 0.2s ease;
+        }
+
+        #audio-bar .audio-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        #audio-bar audio {
+            width: 100%;
+            height: 38px;
+        }
+
+        /* Mandatory 80px Collision Spacer */
+        .collision-spacer {
+            height: 80px;
+            width: 100%;
+        }
+
+        /* Back Button (Matches Theme Toggle Pill) */
+        .back-btn {
+            position: fixed;
+            top: 16px;
+            left: 20px;
+            z-index: 100000;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Small-screen clearance so the title doesn't collide with the buttons */
+        @media (max-width: 768px) {
+            h1 {
+                margin-top: 48px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Back to Index Button -->
+    <a href="../index.html" class="back-btn" title="Volver al menú principal">
+        ← Menú
+    </a>
 
-  <!-- Zero-JS CSS:has Theme Switcher -->
-  <input type="checkbox" id="theme-toggle" aria-label="Cambiar tema">
-  <label for="theme-toggle" class="theme-toggle-btn">
-    <span class="icon-moon">🌙</span>
-    <span class="icon-sun">☀️</span>
-    <span class="mode-label"></span>
-  </label>
+    <!-- Zero-JS CSS:has Theme Switcher -->
+    <input type="checkbox" id="theme-toggle" aria-label="Cambiar tema">
+    <label for="theme-toggle" class="theme-toggle-btn">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+        <span class="mode-label"></span>
+    </label>
 
-  <h1>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</h1>
+    <h1>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</h1>
 
-  <hr>
+    <hr>
 
-  <h2>1. Vocabulario y Expresiones Profesionales</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Término / Expresión</th>
-        <th>Categoría</th>
-        <th>Traducción al inglés</th>
-        <th>Frase de muestra del diálogo</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Flotilla</strong></td>
-        <td>Sustantivo</td>
-        <td>Fleet</td>
-        <td><em>"...precios para flotillas comerciales."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Camioneta de carga</strong></td>
-        <td>Sustantivo</td>
-        <td>Cargo van</td>
-        <td><em>"...anuncio sobre las camionetas de carga Ford Transit 250..."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Adquirir</strong></td>
-        <td>Verbo</td>
-        <td>To acquire / purchase</td>
-        <td><em>"...hemos estado buscando adquirir media docena de vehículos..."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Llamar la atención</strong></td>
-        <td>Frase verbal</td>
-        <td>To catch someone's eye / interest</td>
-        <td><em>"...su oferta nos llamó la atención."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Ficha técnica</strong></td>
-        <td>Sustantivo</td>
-        <td>Spec sheet / data sheet</td>
-        <td><em>"...enviar por correo electrónico nuestras fichas técnicas..."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Sala de exhibición</strong></td>
-        <td>Sustantivo</td>
-        <td>Showroom</td>
-        <td><em>"...pasar por su sala de exhibición esta tarde..."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Revisar los números</strong></td>
-        <td>Frase idiomática</td>
-        <td>To run through the numbers</td>
-        <td><em>"...para que podamos revisar los números en persona."</em></td>
-      </tr>
-      <tr>
-        <td><strong>Concesionario</strong></td>
-        <td>Sustantivo</td>
-        <td>Dealership</td>
-        <td><em>"Sé exactamente dónde queda su concesionario..."</em></td>
-      </tr>
-    </tbody>
-  </table>
+    <h2>1. Vocabulario y Expresiones Profesionales</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Término / Expresión</th>
+                <th>Categoría</th>
+                <th>Traducción al inglés</th>
+                <th>Frase de muestra del diálogo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Flotilla</strong></td>
+                <td>Sustantivo</td>
+                <td>Fleet</td>
+                <td><em>"...precios para flotillas comerciales."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Camioneta de carga</strong></td>
+                <td>Sustantivo</td>
+                <td>Cargo van</td>
+                <td><em>"...anuncio sobre las camionetas de carga Ford Transit 250..."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Adquirir</strong></td>
+                <td>Verbo</td>
+                <td>To acquire / purchase</td>
+                <td><em>"...hemos estado buscando adquirir media docena de vehículos..."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Llamar la atención</strong></td>
+                <td>Frase verbal</td>
+                <td>To catch someone's eye / interest</td>
+                <td><em>"...su oferta nos llamó la atención."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Ficha técnica</strong></td>
+                <td>Sustantivo</td>
+                <td>Spec sheet / data sheet</td>
+                <td><em>"...enviar por correo electrónico nuestras fichas técnicas..."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Sala de exhibición</strong></td>
+                <td>Sustantivo</td>
+                <td>Showroom</td>
+                <td><em>"...pasar por su sala de exhibición esta tarde..."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Revisar los números</strong></td>
+                <td>Frase idiomática</td>
+                <td>To run through the numbers</td>
+                <td><em>"...para que podamos revisar los números en persona."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Concesionario</strong></td>
+                <td>Sustantivo</td>
+                <td>Dealership</td>
+                <td><em>"Sé exactamente dónde queda su concesionario..."</em></td>
+            </tr>
+        </tbody>
+    </table>
 
-  <hr>
+    <hr>
 
-  <h2>2. Guión Interactivo</h2>
-  <p>Haz clic en <strong>"Ver traducción"</strong> debajo de cada intervención para comprobar tu comprensión auditiva y lectora.</p>
+    <h2>2. Guión Interactivo</h2>
+    <p>Haz clic en <strong>"Ver traducción"</strong> debajo de cada intervención para comprobar tu comprensión auditiva
+        y lectora.</p>
 
-  <p><strong>Maureen Simmons (Summit Commercial Fleet Group):</strong></p>
-  <blockquote>
-    <p>"Buenos días, Summit Commercial Fleet Group, habla Maureen. ¿En qué le puedo ayudar?"</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>Good morning, Summit Commercial Fleet Group. Maureen speaking. How can I help you?</em>
-  </details>
+    <p><strong>Maureen Simmons (Summit Commercial Fleet Group):</strong></p>
+    <blockquote>
+        <p>"Buenos días, Summit Commercial Fleet Group, habla Maureen. ¿En qué le puedo ayudar?"</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>Good morning, Summit Commercial Fleet Group. Maureen speaking. How can I help you?</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Sr. Lewis (Cascade Technologies):</strong></p>
-  <blockquote>
-    <p>"Buenos días. Mi nombre es Alan Lewis. Acabo de ver su anuncio sobre las camionetas de carga Ford Transit 250 disponibles con precios para flotillas comerciales. Desde hace un tiempo hemos estado buscando adquirir media docena de vehículos de servicio a un buen precio, y su oferta nos llamó la atención."</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>Good morning. My name is Alan Lewis. I just saw your ad for the Ford Transit 250 cargo vans available with commercial fleet pricing. We’ve been looking to pick up a half-dozen service vehicles at the right price for a while now, and your offer caught our eye.</em>
-  </details>
+    <p><strong>Sr. Lewis (Cascade Technologies):</strong></p>
+    <blockquote>
+        <p>"Buenos días. Mi nombre es Alan Lewis. Acabo de ver su anuncio sobre las camionetas de carga Ford Transit 250
+            disponibles con precios para flotillas comerciales. Desde hace un tiempo hemos estado buscando adquirir
+            media docena de vehículos de servicio a un buen precio, y su oferta nos llamó la atención."</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>Good morning. My name is Alan Lewis. I just saw your ad for the Ford Transit 250 cargo vans available with
+            commercial fleet pricing. We’ve been looking to pick up a half-dozen service vehicles at the right price for
+            a while now, and your offer caught our eye.</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Maureen Simmons:</strong></p>
-  <blockquote>
-    <p>"Excelente. ¿Le gustaría que le envíe por correo electrónico nuestras fichas técnicas y paquetes de financiamiento?"</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>Wonderful. Would you like me to email you our spec sheets and financing packages?</em>
-  </details>
+    <p><strong>Maureen Simmons:</strong></p>
+    <blockquote>
+        <p>"Excelente. ¿Le gustaría que le envíe por correo electrónico nuestras fichas técnicas y paquetes de
+            financiamiento?"</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>Wonderful. Would you like me to email you our spec sheets and financing packages?</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Sr. Lewis:</strong></p>
-  <blockquote>
-    <p>"No, gracias. En realidad preferiría pasar por su sala de exhibición esta tarde con un compañero de trabajo para que podamos revisar los números en persona."</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>No, thank you. I’d actually prefer to head over to your showroom this afternoon with a coworker so we can run through the numbers in person.</em>
-  </details>
+    <p><strong>Sr. Lewis:</strong></p>
+    <blockquote>
+        <p>"No, gracias. En realidad preferiría pasar por su sala de exhibición esta tarde con un compañero de trabajo
+            para que podamos revisar los números en persona."</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>No, thank you. I’d actually prefer to head over to your showroom this afternoon with a coworker so we can
+            run through the numbers in person.</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Maureen Simmons:</strong></p>
-  <blockquote>
-    <p>"No hay ningún problema, señor. Mi nombre es Maureen Simmons y estaré disponible a partir de las 2:30 p. m. ¿Podría confirmarme su nombre completo y el de su empresa, por favor?"</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>No problem at all, sir. My name is Maureen Simmons, and I’ll be available starting at 2:30 PM. Could you confirm your full name and company name for me, please?</em>
-  </details>
+    <p><strong>Maureen Simmons:</strong></p>
+    <blockquote>
+        <p>"No hay ningún problema, señor. Mi nombre es Maureen Simmons y estaré disponible a partir de las 2:30 p. m.
+            ¿Podría confirmarme su nombre completo y el de su empresa, por favor?"</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>No problem at all, sir. My name is Maureen Simmons, and I’ll be available starting at 2:30 PM. Could you
+            confirm your full name and company name for me, please?</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Sr. Lewis:</strong></p>
-  <blockquote>
-    <p>"Por supuesto. Es Alan Lewis, de Cascade Technologies. Sé exactamente dónde queda su concesionario, así que nos vemos a las 2:30. Gracias, hasta luego."</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>Of course. It’s Alan Lewis with Cascade Technologies. I know right where your dealership is located, so we’ll see you at 2:30. Thanks, bye.</em>
-  </details>
+    <p><strong>Sr. Lewis:</strong></p>
+    <blockquote>
+        <p>"Por supuesto. Es Alan Lewis, de Cascade Technologies. Sé exactamente dónde queda su concesionario, así que
+            nos vemos a las 2:30. Gracias, hasta luego."</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>Of course. It’s Alan Lewis with Cascade Technologies. I know right where your dealership is located, so
+            we’ll see you at 2:30. Thanks, bye.</em>
+    </details>
 
-  <br>
+    <br>
 
-  <p><strong>Maureen Simmons:</strong></p>
-  <blockquote>
-    <p>"¡Me parece muy bien, Sr. Lewis! ¡Será un gusto conocerlo entonces!"</p>
-  </blockquote>
-  <details>
-    <summary>🔍 Ver traducción</summary>
-    <em>Sounds great, Mr. Lewis. Looking forward to meeting you then!</em>
-  </details>
+    <p><strong>Maureen Simmons:</strong></p>
+    <blockquote>
+        <p>"¡Me parece muy bien, Sr. Lewis! ¡Será un gusto conocerlo entonces!"</p>
+    </blockquote>
+    <details>
+        <summary>🔍 Ver traducción</summary>
+        <em>Sounds great, Mr. Lewis. Looking forward to meeting you then!</em>
+    </details>
 
-  <hr>
+    <hr>
 
-  <h2>3. Extracción de Información Clave</h2>
-  <p>Intenta responder las siguientes preguntas de memoria antes de desplegar la solución:</p>
+    <h2>3. Extracción de Información Clave</h2>
+    <p>Intenta responder las siguientes preguntas de memoria antes de desplegar la solución:</p>
 
-  <ol>
-    <li><strong>¿Quién llama y a qué empresa representa?</strong></li>
-  </ol>
-  <details>
-    <summary>Mostrar respuesta</summary>
-    Alan Lewis, de <strong>Cascade Technologies</strong>.
-  </details>
+    <ol>
+        <li><strong>¿Quién llama y a qué empresa representa?</strong></li>
+    </ol>
+    <details>
+        <summary>Mostrar respuesta</summary>
+        Alan Lewis, de <strong>Cascade Technologies</strong>.
+    </details>
 
-  <ol start="2">
-    <li><strong>¿Con quién se comunica y qué empresa atiende la llamada?</strong></li>
-  </ol>
-  <details>
-    <summary>Mostrar respuesta</summary>
-    Maureen Simmons, de <strong>Summit Commercial Fleet Group</strong>.
-  </details>
+    <ol start="2">
+        <li><strong>¿Con quién se comunica y qué empresa atiende la llamada?</strong></li>
+    </ol>
+    <details>
+        <summary>Mostrar respuesta</summary>
+        Maureen Simmons, de <strong>Summit Commercial Fleet Group</strong>.
+    </details>
 
-  <ol start="3">
-    <li><strong>¿Cuál es el motivo exacto de la llamada?</strong></li>
-  </ol>
-  <details>
-    <summary>Mostrar respuesta</summary>
-    Interés en adquirir media docena (6) de camionetas de carga Ford Transit 250 con precio de flotilla comercial.
-  </details>
+    <ol start="3">
+        <li><strong>¿Cuál es el motivo exacto de la llamada?</strong></li>
+    </ol>
+    <details>
+        <summary>Mostrar respuesta</summary>
+        Interés en adquirir media docena (6) de camionetas de carga Ford Transit 250 con precio de flotilla comercial.
+    </details>
 
-  <ol start="4">
-    <li><strong>¿Acepta el cliente recibir las especificaciones por correo electrónico?</strong></li>
-  </ol>
-  <details>
-    <summary>Mostrar respuesta</summary>
-    No. Prefiere acudir en persona con un colega a la sala de exhibición para revisar los números.
-  </details>
+    <ol start="4">
+        <li><strong>¿Acepta el cliente recibir las especificaciones por correo electrónico?</strong></li>
+    </ol>
+    <details>
+        <summary>Mostrar respuesta</summary>
+        No. Prefiere acudir en persona con un colega a la sala de exhibición para revisar los números.
+    </details>
 
-  <ol start="5">
-    <li><strong>¿A qué hora y dónde se pactó el encuentro?</strong></li>
-  </ol>
-  <details>
-    <summary>Mostrar respuesta</summary>
-    A las <strong>2:30 p. m.</strong> en el concesionario de Summit Commercial Fleet Group.
-  </details>
+    <ol start="5">
+        <li><strong>¿A qué hora y dónde se pactó el encuentro?</strong></li>
+    </ol>
+    <details>
+        <summary>Mostrar respuesta</summary>
+        A las <strong>2:30 p. m.</strong> en el concesionario de Summit Commercial Fleet Group.
+    </details>
 
-  <hr>
+    <hr>
 
-  <!-- Mandatory Collision Spacer for Dock Clearance -->
-  <div class="collision-spacer"></div>
+    <!-- Mandatory Collision Spacer for Dock Clearance -->
+    <div class="collision-spacer"></div>
 
-  <!-- Viewport Pinned Bottom Audio Dock -->
-  <div id="audio-bar">
-    <div class="audio-container">
-      <audio controls preload="metadata">
-        <source src="../audio/escena_1.mp3" type="audio/mpeg">
-        Tu navegador no soporta la reproducción de audio.
-      </audio>
+    <!-- Viewport Pinned Bottom Audio Dock -->
+    <div id="audio-bar">
+        <div class="audio-container">
+            <audio controls preload="metadata">
+                <source src="../audio/escena_1.mp3" type="audio/mpeg">
+                Tu navegador no soporta la reproducción de audio.
+            </audio>
+        </div>
     </div>
-  </div>
 
 </body>
+
 </html>
