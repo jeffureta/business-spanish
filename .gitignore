@@ -1,0 +1,39 @@
+# ==========================================
+# 1. Python & Virtual Environments
+# ==========================================
+.venv/
+**/.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# ==========================================
+# 2. Operating System & Editor Files
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.vscode/
+.idea/
+
+# ==========================================
+# 3. Project Working & Source Files
+# ==========================================
+# Working source manuals and reference texts
+texts/
+
+# Working PRD guides, drafts, and source textbook PDFs
+pdfs/
+
+# Temporary and audit scripts output
+project_structure.txt
+
+# (Optional) If you do not want your backend TTS scripts on GitHub:
+# python/
+
+# ==========================================
+# 4. Temporary / Scratch Audio Files
+# ==========================================
+audio/test.mp3
+audio/*_v2.mp3
