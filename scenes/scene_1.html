@@ -213,9 +213,9 @@
             height: 38px;
         }
 
-        /* Mandatory 80px Collision Spacer */
+        /* NOTE: Tightened collision buffer to match audio dock height (~58px) and eliminate dead scroll space on mobile */
         .collision-spacer {
-            height: 80px;
+            height: 60px;
             width: 100%;
         }
 
@@ -246,10 +246,20 @@
             color: var(--accent);
         }
 
-        /* Small-screen clearance so the title doesn't collide with the buttons */
+        /* Small-screen optimizations */
         @media (max-width: 768px) {
+            body {
+                /* Zero out body bottom padding on mobile so it does not stack onto the spacer */
+                padding-bottom: 0;
+            }
+
             h1 {
                 margin-top: 48px;
+            }
+
+            /* Scaled down spacer to prevent excessive trailing whitespace past the fixed audio dock */
+            .collision-spacer {
+                height: 50px;
             }
         }
     </style>
@@ -472,8 +482,7 @@
         A las <strong>2:30 p. m.</strong> en el concesionario de Summit Commercial Fleet Group.
     </details>
 
-    <hr>
-
+    <!-- NOTE: Removed redundant trailing <hr> and stacked body padding so the document ends flush with the audio dock -->
     <!-- Mandatory Collision Spacer for Dock Clearance -->
     <div class="collision-spacer"></div>
 
@@ -481,7 +490,7 @@
     <div id="audio-bar">
         <div class="audio-container">
             <audio controls preload="metadata">
-                <source src="../audio/escena_1_v2.mp3" type="audio/mpeg">
+                <source src="../audio/escena_1.mp3" type="audio/mpeg">
                 Tu navegador no soporta la reproducción de audio.
             </audio>
         </div>
