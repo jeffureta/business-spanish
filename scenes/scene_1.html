@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</title>
+    <title>Escena 1: Preguntar por camionetas para la empresa</title>
     <style>
         :root {
             --bg-canvas: #ffffff;
@@ -34,6 +34,12 @@
 
         * {
             box-sizing: border-box;
+        }
+
+        /* Bloquea el rebote elástico en móviles para evitar espacios en blanco al final */
+        html,
+        body {
+            overscroll-behavior-y: none;
         }
 
         body {
@@ -196,7 +202,7 @@
             width: 100%;
             z-index: 99999;
             background: var(--dock-bg);
-            padding: 10px 0;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px)) 0;
             border-top: 1px solid var(--dock-border);
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12);
             transition: background 0.2s ease;
@@ -205,17 +211,18 @@
         #audio-bar .audio-container {
             max-width: 860px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         #audio-bar audio {
             width: 100%;
-            height: 38px;
+            height: 36px;
+            display: block;
         }
 
-        /* NOTE: Tightened collision buffer to match audio dock height (~58px) and eliminate dead scroll space on mobile */
+        /* Espaciador ajustado a la barra de audio */
         .collision-spacer {
-            height: 60px;
+            height: calc(54px + env(safe-area-inset-bottom, 0px));
             width: 100%;
         }
 
@@ -246,32 +253,26 @@
             color: var(--accent);
         }
 
-        /* Small-screen optimizations */
+        /* Ajustes de pantalla móvil */
         @media (max-width: 768px) {
             body {
-                /* Zero out body bottom padding on mobile so it does not stack onto the spacer */
-                padding-bottom: 0;
+                padding: 16px 16px 0 16px;
             }
 
             h1 {
                 margin-top: 48px;
-            }
-
-            /* Scaled down spacer to prevent excessive trailing whitespace past the fixed audio dock */
-            .collision-spacer {
-                height: 50px;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Back to Index Button -->
+    <!-- Botón para volver al índice -->
     <a href="../index.html" class="back-btn" title="Volver al menú principal">
         ← Menú
     </a>
 
-    <!-- Zero-JS CSS:has Theme Switcher -->
+    <!-- Interruptor de tema sin JavaScript (CSS :has) -->
     <input type="checkbox" id="theme-toggle" aria-label="Cambiar tema">
     <label for="theme-toggle" class="theme-toggle-btn">
         <span class="icon-moon">🌙</span>
@@ -279,7 +280,7 @@
         <span class="mode-label"></span>
     </label>
 
-    <h1>Escena 1: Solicitud de Información sobre Vehículos de Flotilla</h1>
+    <h1>Escena 1: Preguntar por camionetas para la empresa</h1>
 
     <hr>
 
@@ -298,19 +299,19 @@
                 <td><strong>Flotilla</strong></td>
                 <td>Sustantivo</td>
                 <td>Fleet</td>
-                <td><em>"...precios para flotillas comerciales."</em></td>
+                <td><em>"...con precio de flotilla."</em></td>
             </tr>
             <tr>
                 <td><strong>Camioneta de carga</strong></td>
                 <td>Sustantivo</td>
                 <td>Cargo van</td>
-                <td><em>"...anuncio sobre las camionetas de carga Ford Transit 250..."</em></td>
+                <td><em>"...anuncio de las camionetas de carga Ford Transit 250..."</em></td>
             </tr>
             <tr>
-                <td><strong>Adquirir</strong></td>
-                <td>Verbo</td>
-                <td>To acquire / purchase</td>
-                <td><em>"...hemos estado buscando adquirir media docena de vehículos..."</em></td>
+                <td><strong>Media docena</strong></td>
+                <td>Frase cuantitativa</td>
+                <td>Half a dozen (six)</td>
+                <td><em>"Queremos comprar media docena de camionetas a buen precio..."</em></td>
             </tr>
             <tr>
                 <td><strong>Llamar la atención</strong></td>
@@ -322,19 +323,7 @@
                 <td><strong>Ficha técnica</strong></td>
                 <td>Sustantivo</td>
                 <td>Spec sheet / data sheet</td>
-                <td><em>"...enviar por correo electrónico nuestras fichas técnicas..."</em></td>
-            </tr>
-            <tr>
-                <td><strong>Sala de exhibición</strong></td>
-                <td>Sustantivo</td>
-                <td>Showroom</td>
-                <td><em>"...pasar por su sala de exhibición esta tarde..."</em></td>
-            </tr>
-            <tr>
-                <td><strong>Revisar los números</strong></td>
-                <td>Frase idiomática</td>
-                <td>To run through the numbers</td>
-                <td><em>"...para que podamos revisar los números en persona."</em></td>
+                <td><em>"¿Gusta que le mande por correo las fichas técnicas...?"</em></td>
             </tr>
             <tr>
                 <td><strong>Concesionario</strong></td>
@@ -342,14 +331,25 @@
                 <td>Dealership</td>
                 <td><em>"Sé exactamente dónde queda su concesionario..."</em></td>
             </tr>
+            <tr>
+                <td><strong>Revisar los números</strong></td>
+                <td>Frase idiomática</td>
+                <td>To run through the numbers</td>
+                <td><em>"...para revisar los números en persona."</em></td>
+            </tr>
+            <tr>
+                <td><strong>Al rato</strong></td>
+                <td>Frase adverbial</td>
+                <td>In a little while / later</td>
+                <td><em>"¡Mucho gusto y lo veo al rato!"</em></td>
+            </tr>
         </tbody>
     </table>
 
     <hr>
 
     <h2>2. Guión Interactivo</h2>
-    <p>Haz clic en <strong>"Ver traducción"</strong> debajo de cada intervención para comprobar tu comprensión auditiva
-        y lectora.</p>
+    <p>Da clic en <strong>"Ver traducción"</strong> abajo de cada intervención para checar lo que dice cada persona.</p>
 
     <p><strong>Maureen Simmons (Summit Commercial Fleet Group):</strong></p>
     <blockquote>
@@ -364,129 +364,117 @@
 
     <p><strong>Sr. Lewis (Cascade Technologies):</strong></p>
     <blockquote>
-        <p>"Buenos días. Mi nombre es Alan Lewis. Acabo de ver su anuncio sobre las camionetas de carga Ford Transit 250
-            disponibles con precios para flotillas comerciales. Desde hace un tiempo hemos estado buscando adquirir
-            media docena de vehículos de servicio a un buen precio, y su oferta nos llamó la atención."</p>
+        <p>"Buenos días. Soy Alan Lewis. Acabo de ver su anuncio de las camionetas de carga Ford Transit 250 con precio de flotilla. Queremos comprar media docena de camionetas a buen precio, y su oferta nos llamó la atención."</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>Good morning. My name is Alan Lewis. I just saw your ad for the Ford Transit 250 cargo vans available with
-            commercial fleet pricing. We’ve been looking to pick up a half-dozen service vehicles at the right price for
-            a while now, and your offer caught our eye.</em>
+        <em>Good morning. My name is Alan Lewis. I just saw your ad for the Ford Transit 250 cargo vans available with commercial fleet pricing. We want to buy half a dozen service vehicles at a good price, and your offer caught our eye.</em>
     </details>
 
     <br>
 
     <p><strong>Maureen Simmons:</strong></p>
     <blockquote>
-        <p>"Excelente. ¿Le gustaría que le envíe por correo electrónico nuestras fichas técnicas y paquetes de
-            financiamiento?"</p>
+        <p>"Con gusto. ¿Gusta que le mande por correo las fichas técnicas y los paquetes de financiamiento?"</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>Wonderful. Would you like me to email you our spec sheets and financing packages?</em>
+        <em>With pleasure. Would you like me to email you our spec sheets and financing packages?</em>
     </details>
 
     <br>
 
     <p><strong>Sr. Lewis:</strong></p>
     <blockquote>
-        <p>"No, gracias. En realidad preferiría pasar por su sala de exhibición esta tarde con un compañero de trabajo
-            para que podamos revisar los números en persona."</p>
+        <p>"No, gracias. La verdad, preferimos ir a su concesionario esta tarde con un compañero para revisar los números en persona."</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>No, thank you. I’d actually prefer to head over to your showroom this afternoon with a coworker so we can
-            run through the numbers in person.</em>
+        <em>No, thank you. Actually, we prefer to head over to your dealership this afternoon with a coworker to run through the numbers in person.</em>
     </details>
 
     <br>
 
     <p><strong>Maureen Simmons:</strong></p>
     <blockquote>
-        <p>"No hay ningún problema, señor. Mi nombre es Maureen Simmons y estaré disponible a partir de las 2:30 p. m.
-            ¿Podría confirmarme su nombre completo y el de su empresa, por favor?"</p>
+        <p>"Claro que sí, con gusto. Mi nombre es Maureen Simmons y voy a estar libre desde las 2:30 de la tarde. ¿Me podría confirmar su nombre completo y el de su empresa, por favor?"</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>No problem at all, sir. My name is Maureen Simmons, and I’ll be available starting at 2:30 PM. Could you
-            confirm your full name and company name for me, please?</em>
+        <em>Of course, with pleasure. My name is Maureen Simmons, and I will be free starting at 2:30 PM. Could you confirm your full name and your company's name, please?</em>
     </details>
 
     <br>
 
     <p><strong>Sr. Lewis:</strong></p>
     <blockquote>
-        <p>"Por supuesto. Es Alan Lewis, de Cascade Technologies. Sé exactamente dónde queda su concesionario, así que
-            nos vemos a las 2:30. Gracias, hasta luego."</p>
+        <p>"Claro que sí. Alan Lewis, de Cascade Technologies. Sé exactamente dónde queda su concesionario, así que nos vemos a las 2:30. Gracias, hasta luego."</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>Of course. It’s Alan Lewis with Cascade Technologies. I know right where your dealership is located, so
-            we’ll see you at 2:30. Thanks, bye.</em>
+        <em>Of course. Alan Lewis, from Cascade Technologies. I know exactly where your dealership is located, so see you at 2:30. Thanks, see you later.</em>
     </details>
 
     <br>
 
     <p><strong>Maureen Simmons:</strong></p>
     <blockquote>
-        <p>"¡Me parece muy bien, Sr. Lewis! ¡Será un gusto conocerlo entonces!"</p>
+        <p>"¡Perfecto, señor Lewis! ¡Mucho gusto y lo veo al rato!"</p>
     </blockquote>
     <details>
         <summary>🔍 Ver traducción</summary>
-        <em>Sounds great, Mr. Lewis. Looking forward to meeting you then!</em>
+        <em>Perfect, Mr. Lewis! Nice meeting you and see you in a bit!</em>
     </details>
 
     <hr>
 
     <h2>3. Extracción de Información Clave</h2>
-    <p>Intenta responder las siguientes preguntas de memoria antes de desplegar la solución:</p>
+    <p>Trata de responder estas preguntas de memoria antes de abrir las respuestas:</p>
 
     <ol>
-        <li><strong>¿Quién llama y a qué empresa representa?</strong></li>
+        <li><strong>¿Quién llama y de qué empresa es?</strong></li>
     </ol>
     <details>
-        <summary>Mostrar respuesta</summary>
+        <summary>Ver respuesta</summary>
         Alan Lewis, de <strong>Cascade Technologies</strong>.
     </details>
 
     <ol start="2">
-        <li><strong>¿Con quién se comunica y qué empresa atiende la llamada?</strong></li>
+        <li><strong>¿Con quién habla y qué empresa le contesta?</strong></li>
     </ol>
     <details>
-        <summary>Mostrar respuesta</summary>
+        <summary>Ver respuesta</summary>
         Maureen Simmons, de <strong>Summit Commercial Fleet Group</strong>.
     </details>
 
     <ol start="3">
-        <li><strong>¿Cuál es el motivo exacto de la llamada?</strong></li>
+        <li><strong>¿Por qué llama y qué camionetas quiere comprar?</strong></li>
     </ol>
     <details>
-        <summary>Mostrar respuesta</summary>
-        Interés en adquirir media docena (6) de camionetas de carga Ford Transit 250 con precio de flotilla comercial.
+        <summary>Ver respuesta</summary>
+        Quiere comprar media docena (6) de camionetas de carga Ford Transit 250 con precio de flotilla.
     </details>
 
     <ol start="4">
-        <li><strong>¿Acepta el cliente recibir las especificaciones por correo electrónico?</strong></li>
+        <li><strong>¿Acepta que le manden las fichas técnicas por correo?</strong></li>
     </ol>
     <details>
-        <summary>Mostrar respuesta</summary>
-        No. Prefiere acudir en persona con un colega a la sala de exhibición para revisar los números.
+        <summary>Ver respuesta</summary>
+        No. Prefiere ir en persona con un compañero al concesionario esta misma tarde para revisar los números.
     </details>
 
     <ol start="5">
-        <li><strong>¿A qué hora y dónde se pactó el encuentro?</strong></li>
+        <li><strong>¿A qué hora y en dónde quedaron de verse?</strong></li>
     </ol>
     <details>
-        <summary>Mostrar respuesta</summary>
-        A las <strong>2:30 p. m.</strong> en el concesionario de Summit Commercial Fleet Group.
+        <summary>Ver respuesta</summary>
+        A las <strong>2:30 de la tarde</strong> en el concesionario de Summit Commercial Fleet Group.
     </details>
 
-    <!-- NOTE: Removed redundant trailing <hr> and stacked body padding so the document ends flush with the audio dock -->
-    <!-- Mandatory Collision Spacer for Dock Clearance -->
+    <!-- Espaciador ajustado a la barra de reproducción -->
     <div class="collision-spacer"></div>
 
-    <!-- Viewport Pinned Bottom Audio Dock -->
+    <!-- Barra de audio fija inferior -->
     <div id="audio-bar">
         <div class="audio-container">
             <audio controls preload="metadata">
